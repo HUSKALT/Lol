@@ -1,0 +1,338 @@
+-- husk-script UNIVERSAL SCRIPT GUI by HUSKscripter (modificato con killaura, jerkoff e nuovi comandi unfly, unkillaura, unfling)
+
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("RunService")
+local lp = Players.LocalPlayer
+local mouse = lp:GetMouse()
+
+-- Anti-multiple execution
+if lp.PlayerGui:FindFirstChild("HUSK_UI") then lp.PlayerGui:FindFirstChild("HUSK_UI"):Destroy() end
+if lp.PlayerGui:FindFirstChild("HUSK_KEY_UI") then lp.PlayerGui:FindFirstChild("HUSK_KEY_UI"):Destroy() end
+
+-- ✅ KEY SYSTEM
+local correctKey = "huskyt"
+
+local keyGui = Instance.new("ScreenGui", lp.PlayerGui)
+keyGui.Name = "HUSK_KEY_UI"
+keyGui.ResetOnSpawn = false
+
+local keyFrame = Instance.new("Frame", keyGui)
+keyFrame.Size = UDim2.new(0, 300, 0, 120)
+keyFrame.Position = UDim2.new(0.5, -150, 0.5, -60)
+keyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+keyFrame.BorderSizePixel = 0
+
+local keyLabel = Instance.new("TextLabel", keyFrame)
+keyLabel.Size = UDim2.new(1, 0, 0, 30)
+keyLabel.Position = UDim2.new(0, 0, 0, 0)
+keyLabel.BackgroundTransparency = 1
+keyLabel.Text = "Enter Key to Access husk-script"
+keyLabel.TextColor3 = Color3.new(1,1,1)
+keyLabel.Font = Enum.Font.GothamBold
+keyLabel.TextSize = 14
+
+local keyBox = Instance.new("TextBox", keyFrame)
+keyBox.Size = UDim2.new(0.9, 0, 0, 30)
+keyBox.Position = UDim2.new(0.05, 0, 0, 40)
+keyBox.PlaceholderText = "Insert key..."
+keyBox.Text = ""
+keyBox.Font = Enum.Font.Gotham
+keyBox.TextSize = 14
+keyBox.TextColor3 = Color3.new(1,1,1)
+keyBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+keyBox.BorderSizePixel = 0
+
+local submitBtn = Instance.new("TextButton", keyFrame)
+submitBtn.Size = UDim2.new(0.5, 0, 0, 25)
+submitBtn.Position = UDim2.new(0.25, 0, 0, 80)
+submitBtn.Text = "Submit"
+submitBtn.TextColor3 = Color3.new(1,1,1)
+submitBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+submitBtn.Font = Enum.Font.GothamBold
+submitBtn.TextSize = 14
+
+local function showNotification(text)
+	pcall(function()
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "husk-script ✅",
+			Text = text,
+			Duration = 4
+		})
+	end)
+end
+
+submitBtn.MouseButton1Click:Connect(function()
+	if keyBox.Text == correctKey then
+		keyGui:Destroy()
+		showNotification("Welcome nice user!")
+
+		-- ORIGINALE SCRIPT INIZIA QUI ⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️
+
+		local gui = Instance.new("ScreenGui", lp.PlayerGui)
+		gui.Name = "HUSK_UI"
+		gui.ResetOnSpawn = false
+
+		local frame = Instance.new("Frame", gui)
+		frame.Size = UDim2.new(0, 300, 0, 40)
+		frame.Position = UDim2.new(0.5, -150, 0, 20)
+		frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		frame.BorderSizePixel = 0
+		frame.Active = true
+		frame.Draggable = true
+
+		local box = Instance.new("TextBox", frame)
+		box.Size = UDim2.new(1, -40, 1, 0)
+		box.Position = UDim2.new(0, 5, 0, 0)
+		box.PlaceholderText = "Inserisci comando..."
+		box.Text = ""
+		box.ClearTextOnFocus = true
+		box.Font = Enum.Font.GothamBold
+		box.TextSize = 16
+		box.TextColor3 = Color3.new(1,1,1)
+		box.BackgroundTransparency = 1
+
+		local close = Instance.new("TextButton", frame)
+		close.Size = UDim2.new(0, 30, 1, 0)
+		close.Position = UDim2.new(1, -35, 0, 0)
+		close.Text = "X"
+		close.TextColor3 = Color3.new(1,0,0)
+		close.BackgroundTransparency = 1
+		close.Font = Enum.Font.GothamBold
+		close.TextSize = 18
+		close.MouseButton1Click:Connect(function()
+			gui:Destroy()
+		end)
+
+		-- Infinite Jump
+		local infJump = false
+		UIS.JumpRequest:Connect(function()
+			if infJump and lp.Character and lp.Character:FindFirstChild("Humanoid") then
+				lp.Character.Humanoid:ChangeState("Jumping")
+			end
+		end)
+
+		-- Fly
+		local flying = false
+		local bv
+		local flyConnection
+		local function startFly()
+			if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
+			bv = Instance.new("BodyVelocity", lp.Character.HumanoidRootPart)
+			bv.Velocity = Vector3.zero
+			bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+			bv.P = 1250
+			flying = true
+
+			flyConnection = RS.RenderStepped:Connect(function()
+				if flying and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+					local dir = Vector3.zero
+					if UIS:IsKeyDown(Enum.KeyCode.W) then dir += workspace.CurrentCamera.CFrame.LookVector end
+					if UIS:IsKeyDown(Enum.KeyCode.S) then dir -= workspace.CurrentCamera.CFrame.LookVector end
+					if UIS:IsKeyDown(Enum.KeyCode.A) then dir -= workspace.CurrentCamera.CFrame.RightVector end
+					if UIS:IsKeyDown(Enum.KeyCode.D) then dir += workspace.CurrentCamera.CFrame.RightVector end
+					if dir.Magnitude > 0 then
+						bv.Velocity = dir.Unit * 50
+					else
+						bv.Velocity = Vector3.zero
+					end
+				end
+			end)
+		end
+
+		local function stopFly()
+			if bv then bv:Destroy() end
+			if flyConnection then flyConnection:Disconnect() end
+			flying = false
+		end
+
+		-- Noclip
+		local noclip = false
+		RS.Stepped:Connect(function()
+			if noclip and lp.Character then
+				for _, part in pairs(lp.Character:GetDescendants()) do
+					if part:IsA("BasePart") then
+						part.CanCollide = false
+					end
+				end
+			end
+		end)
+
+		-- Kill
+		local function kill(name)
+			local target = Players:FindFirstChild(name)
+			if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+				target.Character.Humanoid.Health = 0
+			end
+		end
+
+		-- Fling
+		local flingPart
+		local function fling(name)
+			local target = Players:FindFirstChild(name)
+			if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+			local hrp = target.Character.HumanoidRootPart
+			flingPart = Instance.new("BodyThrust", hrp)
+			flingPart.Force = Vector3.new(5000,0,5000)
+			flingPart.Location = hrp.Position
+			wait(0.2)
+			-- NON distruggiamo subito per permettere fling
+		end
+		local function stopFling()
+			if flingPart then
+				flingPart:Destroy()
+				flingPart = nil
+			end
+		end
+
+		-- Bang
+		local function bang()
+			local char = lp.Character
+			if char and char:FindFirstChild("Humanoid") then
+				local anim = Instance.new("Animation")
+				anim.AnimationId = "rbxassetid://148840371"
+				char.Humanoid:LoadAnimation(anim):Play()
+			end
+		end
+
+		-- Jerk Off Animation
+		local function jerkOff()
+			local char = lp.Character
+			if char and char:FindFirstChild("Humanoid") then
+				local anim = Instance.new("Animation")
+				anim.AnimationId = "rbxassetid://11615538647" -- Animation "jerk off"
+				char.Humanoid:LoadAnimation(anim):Play()
+			end
+		end
+
+		-- Killaura
+		local killauraActive = false
+		local killauraRadius = 10
+
+		local function killaura()
+			if not lp.Character or not lp.Character:FindFirstChild("HumanoidRootPart") then return end
+			for _, plr in pairs(Players:GetPlayers()) do
+				if plr ~= lp and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("HumanoidRootPart") then
+					local dist = (lp.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+					if dist <= killauraRadius and plr.Character.Humanoid.Health > 0 then
+						plr.Character.Humanoid.Health = 0
+					end
+				end
+			end
+		end
+
+		local killauraConnection
+
+		-- Chat Commands
+		Players.PlayerChatted:Connect(function(plr, msg)
+			if plr ~= lp then return end
+			if not msg:lower():sub(1,1) == "?" then return end
+			local args = msg:sub(2):split(" ")
+			local cmd = args[1]
+
+			if cmd == "fly" then
+				if flying then stopFly() else startFly() end
+			elseif cmd == "unfly" then
+				stopFly()
+			elseif cmd == "noclip" then
+				noclip = not noclip
+			elseif cmd == "infjump" then
+				infJump = not infJump
+			elseif cmd == "speed" and tonumber(args[2]) then
+				if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+					lp.Character.Humanoid.WalkSpeed = tonumber(args[2])
+				end
+			elseif cmd == "kill" and args[2] then
+				kill(args[2])
+			elseif cmd == "fling" and args[2] then
+				fling(args[2])
+			elseif cmd == "unfling" then
+				stopFling()
+			elseif cmd == "bang" then
+				bang()
+			elseif cmd == "jerkoff" then
+				jerkOff()
+			elseif cmd == "killaura" then
+				if not killauraActive then
+					killauraActive = true
+					showNotification("Killaura activated")
+					killauraConnection = RS.Heartbeat:Connect(function()
+						killaura()
+					end)
+				else
+					showNotification("Killaura is already active")
+				end
+			elseif cmd == "unkillaura" then
+				if killauraActive then
+					killauraActive = false
+					showNotification("Killaura deactivated")
+					if killauraConnection then
+						killauraConnection:Disconnect()
+					end
+				else
+					showNotification("Killaura is not active")
+				end
+			end
+		end)
+
+		-- Box Input Commands
+		box.FocusLost:Connect(function(enter)
+			if not enter then return end
+			local txt = box.Text:lower()
+			box.Text = ""
+
+			if txt == "fly" then
+				if flying then stopFly() else startFly() end
+			elseif txt == "unfly" then
+				stopFly()
+			elseif txt == "noclip" then
+				noclip = not noclip
+			elseif txt == "infjump" then
+				infJump = not infJump
+			elseif txt:match("^speed") then
+				local n = tonumber(txt:match("%d+"))
+				if n and lp.Character and lp.Character:FindFirstChild("Humanoid") then
+					lp.Character.Humanoid.WalkSpeed = n
+				end
+			elseif txt:match("^kill") then
+				local target = txt:match("kill%s+(%w+)")
+				if target then kill(target) end
+			elseif txt:match("^fling") then
+				local target = txt:match("fling%s+(%w+)")
+				if target then fling(target) end
+			elseif txt == "unfling" then
+				stopFling()
+			elseif txt == "bang" then
+				bang()
+			elseif txt == "jerkoff" then
+				jerkOff()
+			elseif txt == "killaura" then
+				if not killauraActive then
+					killauraActive = true
+					showNotification("Killaura activated")
+					killauraConnection = RS.Heartbeat:Connect(function()
+						killaura()
+					end)
+				else
+					showNotification("Killaura is already active")
+				end
+			elseif txt == "unkillaura" then
+				if killauraActive then
+					killauraActive = false
+					showNotification("Killaura deactivated")
+					if killauraConnection then
+						killauraConnection:Disconnect()
+					end
+				else
+					showNotification("Killaura is not active")
+				end
+			end
+		end)
+
+		-- Messaggio console
+		print("✅ husk-script Loaded - Creato by HUSKscripter (modificato con killaura, jerkoff e nuovi comandi un*)")
+
+	else
+		showNotification("❌ Invalid key. Try again.")
+	end
+end)
